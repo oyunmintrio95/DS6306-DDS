@@ -1,0 +1,61 @@
+---
+title: "FLS2-2"
+author: "Hayoung Hayoung"
+date: "2024-09-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## import education_income.csv file
+```{r}
+library(ggplot2)
+EI <- read.csv("/Users/oyunm/Downloads/Education_Income.csv", header = TRUE)
+EI
+
+```
+
+## check if any data is missing
+```{r}
+which(EI$Educ == "") # none
+which(EI$Income2005 == "") #none
+```
+
+## education levels vs. Income
+```{r}
+EI$Educ2 = factor(EI$Educ, levels = c("<12", "12", "13-15", "16", ">16"))
+
+EI |>
+  ggplot(aes(x=Income2005, fill=Educ2)) +
+  geom_boxplot() +
+  ggtitle("Education Level vs. Income")+
+  xlab("Income") +
+  coord_flip()
+
+```
+
+### Best 50 plots
+```{r}
+# Data prep
+theme_set(theme_bw())
+data("mtcars")
+mtcars$`car name` <- rownames(mtcars) #create new column for car names
+mtcars$mpg_z <- round((mtcars$mpg - mean(mtcars$mpg))/sd(mtcars$mpg), 2) #compute normalized mpg
+mtcars$mpg_type <- ifelse(mtcars$mpg_z <0, "below", "above") #above/below avg flag
+mtcars <- mtcars[order(mtcars$mpg_z), ] #sort
+mtcars$`car name` <- factor(mtcars$`car name`, levels = mtcars$`car name`) #conver to factor to retain sorted order in plot.
+```
+
+### Diverging bars
+```{r}
+#Diverging Barcharts
+ggplot(mtcars, aes(x=`car name`, y=mpg_z, label-mpg_z)) + 
+  geom_bar(stat='identity', aes(fill=mpg_type), width=.5) +
+  scale_fill_manual(name = "Mileage",
+                    labels = c("Above Average", "Below Average"),
+                    values = c("above" = "#00ba38", "below" = "#f8766d")) +
+  labs(subtitle="Normalized mileage from 'mtcars'", title = "Diverging Bars") +
+  coord_flip()
+```

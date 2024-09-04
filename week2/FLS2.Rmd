@@ -1,0 +1,141 @@
+---
+title: "FLS2"
+author: "Hayoung Cheon"
+date: "2024-09-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Libraries
+```{r}
+#ggplot2
+library(ggplot2)
+library(plotly)
+library(ggthemes)
+
+```
+
+## Import PlayerBBall.csv
+```{r}
+players = read.csv("/Users/oyunm/Downloads/PlayersBBall.csv", header = TRUE)
+#players
+
+#players$name
+#players$year_start
+#players$year_end
+#players$position
+#players$height
+#players$weight
+#players$birth_date
+
+```
+### Clean the data
+```{r}
+#Identify the missing data in position
+which(players$position=="") #2143
+players[2143,]            # his position height and weight is missing
+
+players[2143,]$position = "G"
+players[2143,]$height = "6-2"
+players[2143,]$weight= "185"
+
+players[2143,]
+
+## change C-F to F-C
+players$position <- gsub("C-F", "F-C", players$position)
+
+## change G-F to F-G
+players$position <- gsub("G-F", "F-G", players$position)
+
+#To check if replacing has gone right.
+players[2141,]
+```
+### number of players by position
+```{r}
+players %>%
+  ggplot(aes(x=position, fill=position)) + geom_bar() +
+  ggtitle("Number of Basketball Players by position") +
+  theme_excel()
+
+```
+
+
+### weight of center vs. forwards
+```{r}
+# since the weight data was in character thhe box plot wasn't showing correctly. Changed the data into numeric.
+players$weight <- as.numeric(players$weight)
+
+players %>% filter(players$position == "C" | players$position == "F") %>%
+  ggplot(aes(x=position, y=weight, fill=position)) + geom_boxplot() +
+  ggtitle("Weight of Center vs. Forwards") 
+
+
+```
+
+### height of center vs. forwards
+```{r}
+#factor() function helps to change the order of the axis columns
+summary(players$height)
+players$height_change = factor(players$height, levels = c("5-0","5-1", "5-2", "5-3","5-4","5-5","5-6","5-7","5-8","5-9","5-10","5-11","5-12","6-0", "6-1", "6-2", "6-3", "6-4", "6-5", "6-6", "6-7", "6-8", "6-9", "6-10", "6-11", "6-12", "7-1", "7-2", "7-3", "7-4", "7-5", "7-6", "7-7"))
+n <- is.na(players$height)
+players %>% filter(players$position == "C" | players$position == "F") %>%
+  ggplot(aes(x=height_change, fill=position)) + geom_bar() +
+  ggtitle("Height of Center vs. Forwards")
+
+```
+
+### height difference between positions
+```{r}
+players %>%
+  ggplot(aes(x=height_change, fill=position)) +geom_bar() + 
+  ggtitle("Height distribution by positions") +xlab("height")+
+  facet_wrap(~position)
+```
+
+## Change height(Character type) data type to a numeric type
+```{r}
+library("tidyr")
+
+#Change heights character type to numeric
+players <- players %>%
+separate(height, into = c("feet", "inches"), sep = "-", convert = TRUE)
+players$height_inches <- players$feet * 12 + players$inches
+```
+
+### A relation between height and weight
+```{r}
+ggplot(data = players, mapping = aes(x=weight, y=height_inches)) +
+  geom_point() + geom_smooth(method = "lm")+
+  ggtitle("Weight vs. Height") + ylab("height")
+
+```
+
+### A relation between height and weight by position
+```{r}
+
+ggplot(data = players, mapping = aes(x = weight, y=height_inches, linetype=position, color=position)) +
+  geom_point() +geom_smooth(method = "lm", fill="black") +
+  facet_wrap(~position)
+```
+
+### Height increase over years
+```{r}
+ggplot(data=players, mapping = aes(x= year_start, y=height_inches)) +
+  geom_point() +geom_smooth(method="lm") +
+  ggtitle("Height vs. Year Started") + xlab("Year Started")+ylab("Height")
+
+```
+
+### 3D plots of weight vs. height vs. years
+```{r}
+p <- plot_ly(players, x=~weight, y=~height_inches, z=~year_start, color = ~position) %>%
+  add_markers() %>%
+  layout(scene = list(xaxis = list(title = "Weight"),
+                      yaxis = list(title = "Height"),
+                      zaxis = list(title = "Year Started")))
+
+ggplotly(p)
+```
