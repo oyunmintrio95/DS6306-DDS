@@ -4,7 +4,7 @@
 - The easiset way to communicate through the data.
 - But It's not just pictures but it's an insight
 
-Questions: What are some of the pros and cons of data visualization vs descriptive statistics?
+- Questions: What are some of the pros and cons of data visualization vs descriptive statistics?
 - pros
   - readable : allows to read the whole range of the data
   - is to how to represent the data
@@ -49,3 +49,15 @@ Questions: What are some of the pros and cons of data visualization vs descripti
 ## Plotnine Python Package
 - Plotnine is a package for bringing ggplot2 functionality to Python
 - Allows for grammar of graphics based data visualization.
+
+- In Python, we cannot simply add '+', instead use '+\' or wrap them in parenthesis().
+
+## Plotly
+- Plotly is a for-profit private company based out of Montreal, CA
+- Offer many free graphics and data visualization libraries for R, Python, Julia, and other programming langueages
+- A leader in 3D plotting and mapping applications
+- Plotly data visualization routines are also available in Python
+- Syntax is similar but not identical
+- Advanced mapping applications.
+
+### I need to learn how to interpret the data through the graph. Consider the details. And ask why?? => which will create another question to interpret.
