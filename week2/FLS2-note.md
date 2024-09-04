@@ -61,3 +61,7 @@
 - Advanced mapping applications.
 
 ### I need to learn how to interpret the data through the graph. Consider the details. And ask why?? => which will create another question to interpret.
+
+## The importance of data visualization
+- It provides patterens that cannot be found in descriptive statistic.
+- And by those pattern(linear, ...), we treat them differently
